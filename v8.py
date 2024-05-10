@@ -8,7 +8,7 @@ def get_random_file_content(token):
         "Authorization": f"token {token}"
     }
     # Tìm một repository ngẫu nhiên có chứa từ khoá "Shell"
-    search_url = "https://api.github.com/search/repositories?q=Shell"
+    search_url = "https://api.github.com/search/repositories?q=README"
     response = requests.get(search_url, headers=headers)
     if response.status_code == 200:
         repositories = response.json()['items']
