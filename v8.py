@@ -42,6 +42,7 @@ def get_random_readme_content(token):
                     print("README content is empty.")
             else:
                 print("Failed to get README content. Status code:", readme_response.status_code)
+                print("Response text:", readme_response.text)
         else:
             print("Failed to search repositories. Status code:", response.status_code)
             return None
@@ -79,7 +80,7 @@ def create_commit_to_random_repo(token, repository_owner, repository_name, commi
             print("Commit created successfully!")
         else:
             print("Failed to create commit. Status code:", commit_response.status_code)
-            print("Response:", commit_response.text)
+            print("Response text:", commit_response.text)
     elif response.status_code == 404:
         # Nếu không có tệp README.md, tạo tệp mới và commit
         print("README.md not found in the repository. Creating new README.md.")
@@ -102,10 +103,10 @@ def create_commit_to_random_repo(token, repository_owner, repository_name, commi
             print("Commit created successfully!")
         else:
             print("Failed to create commit. Status code:", commit_response.status_code)
-            print("Response:", commit_response.text)
+            print("Response text:", commit_response.text)
     else:
         print("Failed to get README info. Status code:", response.status_code)
-        print("Response:", response.text)
+        print("Response text:", response.text)
 
 def main():
     # Lấy PERSONAL_ACCESS_TOKEN từ biến môi trường
