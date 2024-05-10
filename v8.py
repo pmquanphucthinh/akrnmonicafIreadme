@@ -24,8 +24,8 @@ def get_random_file_content(token):
                 files = response.json()
                 if files:
                     # Chọn một tệp ngẫu nhiên
-                    random_file = random.choice(files)
-                    file_path = random_file['path']
+                    random_file_info = random.choice(files)
+                    file_path = random_file_info['path']
                     # Lấy nội dung của tệp
                     content_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
                     response = requests.get(content_url, headers=headers)
