@@ -54,6 +54,8 @@ def copy_readme_to_random_repo(token, owner):
             # Tiếp tục sao chép README.md từ repository nguồn sang repository đích
             # (Mã giống như trong câu trả lời trước)
             # ...
+        else:
+            print("Failed to get a random source repository.")
     else:
         print("Failed to get owner info.")
 
