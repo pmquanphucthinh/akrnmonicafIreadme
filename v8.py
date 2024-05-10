@@ -37,7 +37,7 @@ def get_random_readme_content(token):
                 if content.strip():  # Kiểm tra xem nội dung có rỗng không
                     print("Found non-empty README content:")
                     print(content)
-                    return content
+                    return content, repository['owner']['login'], repository['name']
                 else:
                     print("README content is empty.")
             else:
@@ -47,22 +47,22 @@ def get_random_readme_content(token):
             return None
         page += 1
 
-def create_commit_to_random_repo(token, username, email, repository_owner, repository_name, commit_message, content):
+def create_commit_to_random_repo(token, repository_owner, repository_name, commit_message, content):
     headers = {
         "Authorization": f"token {token}"
     }
-    # Tạo URL API để lấy thông tin về tệp README.md
+
+    # Lấy thông tin về tệp README.md từ repository được chỉ định
     readme_url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/README.md"
-    
-    # Lấy thông tin về tệp README.md từ repository bất kỳ
     response = requests.get(readme_url, headers=headers)
+
     if response.status_code == 200:
         readme_info = response.json()
         sha = readme_info['sha']
-        
+
         # Mã hóa nội dung thành Base64
         content_encoded = base64.b64encode(content.encode()).decode()
-        
+
         # Dữ liệu của commit
         commit_data = {
             "message": commit_message,
@@ -70,11 +70,11 @@ def create_commit_to_random_repo(token, username, email, repository_owner, repos
             "branch": "main",
             "sha": sha
         }
-        
+
         # Tạo commit
         commit_url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/README.md"
         commit_response = requests.put(commit_url, headers=headers, json=commit_data)
-        
+
         if commit_response.status_code == 200:
             print("Commit created successfully!")
         else:
@@ -89,13 +89,11 @@ def main():
     personal_access_token = os.environ.get('PERSONAL_ACCESS_TOKEN')
     if personal_access_token:
         # Bước 1: Lấy nội dung README.md ngẫu nhiên từ một repository công khai trên GitHub
-        readme_content = get_random_readme_content(personal_access_token)
+        readme_content, repository_owner, repository_name = get_random_readme_content(personal_access_token)
         if readme_content:
-            # Bước 2: Tạo commit vào một tệp README.md trong một repository bất kỳ
-            repository_owner = input("Enter repository owner: ")
-            repository_name = input("Enter repository name: ")
+            # Bước 2: Tạo commit vào một tệp README.md trong một repository ngẫu nhiên trên GitHub
             commit_message = "Update README.md"
-            create_commit_to_random_repo(personal_access_token, None, None, repository_owner, repository_name, commit_message, readme_content)
+            create_commit_to_random_repo(personal_access_token, repository_owner, repository_name, commit_message, readme_content)
         else:
             print("Failed to get README content.")
     else:
