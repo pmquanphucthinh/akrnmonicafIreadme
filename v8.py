@@ -31,8 +31,15 @@ def get_random_file_content(token):
                     response = requests.get(content_url, headers=headers)
                     if response.status_code == 200:
                         file_info = response.json()
-                        content = base64.b64decode(file_info['content']).decode()
-                        return content
+                        if 'content' in file_info:
+                            # Kiểm tra nếu tệp là văn bản
+                            if file_info['encoding'] == 'base64':
+                                content = base64.b64decode(file_info['content']).decode()
+                                return content
+                            else:
+                                print("File is not text, skipping...")
+                        else:
+                            print("File content not found.")
                     else:
                         print("Failed to get content of random file. Status code:", response.status_code)
                 else:
