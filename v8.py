@@ -81,6 +81,19 @@ def get_user_repos(token):
         print("Failed to get user repos. Status code:", response.status_code)
         return None
 
+def get_file_sha(token, repository_owner, repository_name, file_path):
+    headers = {
+        "Authorization": f"token {token}"
+    }
+    url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/{file_path}"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        file_info = response.json()
+        return file_info['sha']
+    else:
+        print("Failed to get file SHA. Status code:", response.status_code)
+        return None
+
 def create_commit(token, username, email, repository_owner, repository_name, commit_message, content, sha):
     url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/README.md"
 
@@ -90,12 +103,9 @@ def create_commit(token, username, email, repository_owner, repository_name, com
     commit_data = {
         "message": commit_message,
         "content": content_encoded,
-        "branch": "main"
+        "branch": "main",
+        "sha": sha  # Thêm sha vào yêu cầu
     }
-
-    # Thêm SHA của commit trước đó nếu có
-    if sha:
-        commit_data["sha"] = sha
 
     headers = {
         "Authorization": f"token {token}"
@@ -125,11 +135,17 @@ def main():
                     # Chọn một repository ngẫu nhiên từ danh sách
                     repository_name = random.choice(repo_names)
 
-                    # Tạo commit mới với nội dung mới và SHA của commit trước đó
-                    commit_message = "Random commit message"  # Bạn có thể thay đổi commit message theo nhu cầu
-                    sha = None  # Không cần SHA vì đây là commit mới
+                    # Lấy sha của phiên bản hiện tại của README.md
+                    file_path = "README.md"
+                    file_sha = get_file_sha(personal_access_token, username, repository_name, file_path)
 
-                    create_commit(personal_access_token, username, email, username, repository_name, commit_message, random_file_content, sha)
+                    if file_sha:
+                        # Tạo commit mới với nội dung mới và sha của commit trước đó
+                        commit_message = "Random commit message"  # Bạn có thể thay đổi commit message theo nhu cầu
+
+                        create_commit(personal_access_token, username, email, username, repository_name, commit_message, random_file_content, file_sha)
+                    else:
+                        print("Failed to get file SHA.")
                 else:
                     print("User has no repositories.")
             else:
