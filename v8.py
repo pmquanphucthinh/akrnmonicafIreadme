@@ -138,7 +138,7 @@ def main():
 
                     if file_sha:
                         # Tạo commit mới với nội dung mới và sha của commit trước đó
-                        commit_message = "Random commit message"  # Bạn có thể thay đổi commit message theo nhu cầu
+                        commit_message = "Update README.md"  # Bạn có thể thay đổi commit message theo nhu cầu
 
                         create_commit(personal_access_token, username, email, username, repository_name, commit_message, random_file_content, file_sha)
                     else:
