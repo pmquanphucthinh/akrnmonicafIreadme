@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: "0 */4 * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3
+    - cron: '*/20 * * * *'
   workflow_dispatch:
     inputs:
       run-manual:
