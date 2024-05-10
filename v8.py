@@ -52,7 +52,7 @@ def create_commit_to_random_repo(token, repository_owner, repository_name, commi
         "Authorization": f"token {token}"
     }
 
-    # Lấy thông tin về tệp README.md từ repository được chỉ định
+    # Kiểm tra xem tệp README.md có tồn tại trong repository không
     readme_url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/README.md"
     response = requests.get(readme_url, headers=headers)
 
@@ -76,6 +76,29 @@ def create_commit_to_random_repo(token, repository_owner, repository_name, commi
         commit_response = requests.put(commit_url, headers=headers, json=commit_data)
 
         if commit_response.status_code == 200:
+            print("Commit created successfully!")
+        else:
+            print("Failed to create commit. Status code:", commit_response.status_code)
+            print("Response:", commit_response.text)
+    elif response.status_code == 404:
+        # Nếu không có tệp README.md, tạo tệp mới và commit
+        print("README.md not found in the repository. Creating new README.md.")
+        
+        # Mã hóa nội dung thành Base64
+        content_encoded = base64.b64encode(content.encode()).decode()
+
+        # Dữ liệu của commit
+        commit_data = {
+            "message": commit_message,
+            "content": content_encoded,
+            "branch": "main"
+        }
+
+        # Tạo commit
+        commit_url = f"https://api.github.com/repos/{repository_owner}/{repository_name}/contents/README.md"
+        commit_response = requests.put(commit_url, headers=headers, json=commit_data)
+
+        if commit_response.status_code == 201:
             print("Commit created successfully!")
         else:
             print("Failed to create commit. Status code:", commit_response.status_code)
