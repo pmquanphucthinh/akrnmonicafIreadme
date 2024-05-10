@@ -26,20 +26,17 @@ def get_random_file_content(token):
                     # Chọn một tệp ngẫu nhiên
                     random_file_info = random.choice(files)
                     file_path = random_file_info['path']
-                    # Lấy nội dung của tệp
+                    # Lấy thông tin về tệp
                     content_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{file_path}"
                     response = requests.get(content_url, headers=headers)
                     if response.status_code == 200:
                         file_info = response.json()
-                        if 'content' in file_info:
-                            # Kiểm tra nếu tệp là văn bản
-                            if file_info['encoding'] == 'base64':
-                                content = base64.b64decode(file_info['content']).decode()
-                                return content
-                            else:
-                                print("File is not text, skipping...")
+                        # Kiểm tra xem tệp có phải là văn bản không
+                        if file_info['type'] == 'file' and file_info['encoding'] == 'base64':
+                            content = base64.b64decode(file_info['content']).decode()
+                            return content
                         else:
-                            print("File content not found.")
+                            print("File is not text, skipping...")
                     else:
                         print("Failed to get content of random file. Status code:", response.status_code)
                 else:
