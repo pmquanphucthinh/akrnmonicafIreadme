@@ -20,25 +20,31 @@ def get_random_repo(token, owner):
         "Authorization": f"token {token}"
     }
     page = random.randint(1, 10)  # Lấy một trang ngẫu nhiên từ kết quả tìm kiếm
-    search_url = "https://api.github.com/search/repositories"
-    params = {
-        "q": f"language:Shell",  
-        "per_page": 100,
-        "sort": "updated",
-        "page": page
-    }
-    response = requests.get(search_url, headers=headers, params=params)
-    if response.status_code == 200:
-        repositories = response.json().get('items', [])
-        if repositories:
-            repository = random.choice(repositories)  # Chọn một repository ngẫu nhiên
-            return repository
+    while True:
+        search_url = "https://api.github.com/search/repositories"
+        params = {
+            "q": f"language:Shell",
+            "per_page": 100,
+            "sort": "updated",
+            "page": page
+        }
+        response = requests.get(search_url, headers=headers, params=params)
+        if response.status_code == 200:
+            repositories = response.json().get('items', [])
+            if repositories:
+                for repository in repositories:
+                    readme_url = f"https://raw.githubusercontent.com/{repository['full_name']}/main/README.md"
+                    readme_response = requests.get(readme_url)
+                    if readme_response.status_code == 200:
+                        return repository  # Trả về repository nếu tìm thấy README.md
+                # Nếu không tìm thấy README.md trong tất cả các repository trang này, tiếp tục tìm trang tiếp theo
+                page += 1
+            else:
+                print("No repositories found.")
+                return None
         else:
-            print("No repositories found.")
+            print("Failed to fetch repositories. Status code:", response.status_code)
             return None
-    else:
-        print("Failed to fetch repositories. Status code:", response.status_code)
-        return None
 
 def copy_readme_to_random_repo(token):
     headers = {
