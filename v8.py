@@ -44,10 +44,10 @@ def main():
     if personal_access_token:
         # Bước 1: Lấy nội dung README.md ngẫu nhiên từ một repository công khai trên GitHub
         readme_content = get_random_readme_content(personal_access_token)
-        if readme_content:
-            # Tiếp tục với các bước khác trong hàm main
-        else:
-            print("Failed to get README content.")
+if readme_content:
+    # Tiếp tục với các bước khác trong hàm main
+else:
+    print("Failed to get README content.")
     else:
         print("Failed to get personal access token from environment variables.")
 
