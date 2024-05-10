@@ -79,7 +79,7 @@ def copy_readme_to_random_repo(token):
                 else:
                     print("Failed to get a random target repository.")
             else:
-                print("Failed to fetch README content. Status code:", response.status_code)
+                print("Failed to fetch README content from the source repository. Status code:", response.status_code)
                 print("Response text:", response.text)
         else:
             print("Failed to get a random source repository.")
