@@ -22,7 +22,7 @@ def get_random_repo(token, owner):
     page = random.randint(1, 10)  # Lấy một trang ngẫu nhiên từ kết quả tìm kiếm
     search_url = "https://api.github.com/search/repositories"
     params = {
-        "q": f"filename:README.md", 
+        "q": f"README", 
         "per_page": 100,
         "sort": "updated",
         "page": page
